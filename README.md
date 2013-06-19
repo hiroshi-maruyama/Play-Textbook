@@ -43,7 +43,7 @@ OSは限定しませんが，本資料作成においてはUbuntu 12.04 LTS Serv
 1. ユーザー一覧ページとユーザーアカウント削除機能（管理者アカウント専用）
 1. アクセスログ簡易出力機能
 
-　本ひな形作成までの手順（未作成）
+　[本ひな形作成までの手順](https://github.com/hiroshi-maruyama/Play-Textbook/blob/master/PlayTemplate.md)
 
 　ひな形のダウンロード（未作成）
 
