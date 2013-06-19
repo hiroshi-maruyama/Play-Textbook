@@ -340,4 +340,67 @@ a {
 
 ## カスタムできる状態にする
 
+　初期状態では/secure/loginの画面のHTMLを弄れる状態ではない．以下のコマンドでログイン画面のHTMLを編集可能にする．
+```
+$ play secure:ov --login
+```
+
+　すると，app/views/Secure/login.htmlが用意される．
+
 ## ユーザー登録フォームをログイン画面に用意する
+
+　login.htmlにApplication/index.htmlに作ったユーザー登録フォームを移す．
+
+　その際，add_user()　は UnSecure.add_user() に書き換える．（認証なしのサービスをUnSecureコントローラに集約します）
+
+```html
+<h1>ユーザー追加</h1>
+#{form @UnSecure.add_user()}
+メールアドレス：<input type="email" name="user.email" value="${flash['user.email']}" placeholder="メールアドレス" />
+    <span class="error">#{error 'user.email' /}</span><br />
+パスワード：<input type="password" name="user.password" value="${flash['user.password']}" placeholder="パスワード" />
+    <span class="error">#{error 'user.password' /}</span><br />
+<input type='submit' value='ユーザー追加' />
+#{/form}
+```
+
+
+## controllers/UnSecure.javaを作成する
+
+　中身はApplication.javaで作ったadd_userメソッドですが，index()を呼んでいた部分を
+
+```java
+redirect("/secure/login");
+```
+に変更する．
+
+```java
+package controllers;
+
+import play.*;
+import play.mvc.*;
+
+import models.*;
+import play.data.validation.Valid;
+
+public class UnSecure extends Controller {
+
+    public static void add_user(@Valid User user) {
+        if (validation.hasErrors()) {
+            params.flash();     // add http parameters to the flash scope
+            validation.keep();  // keep the errors for the next request
+            redirect("/secure/login");
+        }
+        
+        User new_user = new User(user);
+        new_user.save();
+        flash.put("success", user.email + " のユーザー登録に成功しました");
+        redirect("/secure/login");
+    }
+}
+```
+
+# ユーザー一覧は管理者専用ページにする
+
+# アクセスログ簡易出力機能を作成する
+
