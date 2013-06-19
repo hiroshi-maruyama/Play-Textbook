@@ -1,4 +1,18 @@
 #{extends 'main.html' /}
-#{set title:'Home' /}
+#{set title:'PlayTemplate' /}
 
-#{welcome /}
+<h1>ユーザー追加</h1>
+#{form @add_user()}
+メールアドレス：<input type="email" name="user.email" value="${flash['user.email']}" placeholder="メールアドレス" />
+    <span class="error">#{error 'user.email' /}</span><br />
+パスワード：<input type="password" name="user.password" value="${flash['user.password']}" placeholder="パスワード" />
+    <span class="error">#{error 'user.password' /}</span><br />
+<input type='submit' value='ユーザー追加' />
+#{/form}
+
+<h1>ユーザー一覧</h1>
+<ol>
+    #{list items:user_list, as:'user'}
+    <li>${user.email} (${user.get_regist_date().format('yyyy/MM/dd HH:mm:ss')})</li>
+    #{/list}
+</ol>
