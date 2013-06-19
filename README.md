@@ -45,7 +45,7 @@ OSは限定しませんが，本資料作成においてはUbuntu 12.04 LTS Serv
 
 　[本ひな形作成までの手順](https://github.com/hiroshi-maruyama/Play-Textbook/blob/master/PlayTemplate.md)
 
-　ひな形のダウンロード（未作成）
+　[ひな形のダウンロードv0.1](https://github.com/hiroshi-maruyama/Play-Textbook/archive/PlayTemplate0.1.zip)
 
 
 ## レクチャStep by Step
