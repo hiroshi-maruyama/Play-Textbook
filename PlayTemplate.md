@@ -402,5 +402,85 @@ public class UnSecure extends Controller {
 
 # ユーザー一覧は管理者専用ページにする
 
+## 権限をチェックするメソッドをAuth.javaに追加する
+
+```java
+    static boolean check(String profile) {
+        User user = User.find("byEmail", Auth.connected()).first();
+        if(user != null){
+            if(profile.equals("AdminOnly")){
+                return user.isAdmin;
+            }
+        }
+        return false;
+    }
+```
+
+## Application.indexをAdmin専用にしてみる
+
+```java
+    @Check("AdminOnly")
+    public static void index() {
+        List<User> user_list = models.User.get_active_user_list();
+        render(user_list);
+    }
+```
+
+　管理者アカウントでないと，Access deniedと表示されるはず．
+直接ログアウトするには，URL欄にsecure/logoutを追加してアクセスしてください．
+
+## Application.user_listに移行し，indexはようこそ画面にする
+
+1. index()メソッドおよびApplication/index.htmlはuser_listにリネームする
+1. シンプルなindex()メソッドとApplication/index.htmlを作る
+1. ヘッダー用にログインユーザー情報をrenderに渡すようにする
+1. ヘッダーに管理者用リンクを追記する
+
+シンプルなindex()
+```java
+public static void index(){
+	render();
+}
+```
+
+シンプルなindex.html
+```html
+#{extends 'main.html' /}
+#{set title:'PlayTemplate' /}
+
+<h1>ようこそPlayTemplateへ！</h1>
+```
+
+### ヘッダー用にログインユーザー情報をrenderに渡すようにする
+
+　@Beforeアノテーションを使い，ログイン中のユーザーのインスタンスをrenderに渡す．
+
+　具体的には，以下のメソッドをApplication.javaに追加する．
+
+```java
+@Before
+public static void set_login_user() {
+    User login_user = User.find("byEmail", Auth.connected()).first();
+    renderArgs.put("login_user", login_user);
+}
+```
+
+### ヘッダーに管理者用リンクを追記する
+
+　main.htmlを変更する．
+
+```html
+<body>
+    <div id='header'>
+        #{if login_user.isAdmin == true}
+        <a href='@{Application.user_list}'>ユーザー一覧</a>
+        #{/if}
+        <a href='/'>TOP</a> | 
+        <a href='@{Secure.logout}'><button type='button'>LOGOUT</button></a>
+    </div>
+    #{doLayout /}
+</body>
+```
+
 # アクセスログ簡易出力機能を作成する
 

@@ -1,0 +1,9 @@
+#{extends 'main.html' /}
+#{set title:'PlayTemplate' /}
+
+<h1>ユーザー一覧</h1>
+<ol>
+    #{list items:user_list, as:'user'}
+    <li>${user.email} (${user.get_regist_date().format('yyyy/MM/dd HH:mm:ss')})</li>
+    #{/list}
+</ol>

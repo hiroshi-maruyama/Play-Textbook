@@ -12,6 +12,10 @@
     </head>
     <body>
         <div id='header'>
+            #{if login_user.isAdmin == true}
+            <a href='@{Application.user_list}'>ユーザー一覧</a> | 
+            #{/if}
+            <a href='/'>TOP</a> | 
             <a href='@{Secure.logout}'><button type='button'>LOGOUT</button></a>
         </div>
         #{doLayout /}

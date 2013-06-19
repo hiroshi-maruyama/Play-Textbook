@@ -18,4 +18,14 @@ public class Auth extends Secure.Security {
         return User.authentify(username, password);
     }
 
+    static boolean check(String profile) {
+        
+        User user = User.find("byEmail", Auth.connected()).first();
+        if(user != null){
+            if(profile.equals("AdminOnly")){
+                return user.isAdmin;
+            }
+        }
+        return false;
+    }
 }
