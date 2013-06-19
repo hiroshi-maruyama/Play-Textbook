@@ -8,6 +8,7 @@ import java.util.*;
 import models.*;
 import play.data.validation.Valid;
 
+@With(Secure.class)
 public class Application extends Controller {
 
     public static void index() {

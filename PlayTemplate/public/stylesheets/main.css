@@ -1,0 +1,16 @@
+body {
+    margin : 0;
+    padding : 0;
+    border : 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+#header {
+    padding : 0.5em;
+    text-align : right;
+    border-bottom : 1px solid #999;
+    background-color : #DDD;
+}

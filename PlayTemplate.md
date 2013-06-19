@@ -231,6 +231,111 @@ public User(String email, String password){
 
 　ユーザー登録フォームとユーザー一覧表示はログイン必須エリアにする．
 
+## Secureモジュールの有効化
+
+conf/dependencies.ymlを以下のように編集する
+```
+require:
+    - play
+    - play -> secure
+```
+
+以下のコマンドでモジュールをロード可能な状態にする
+```
+PlayTemplate $ play dependencies
+```
+
+※ NetBeansで開発している場合，改めてnetbeansifyする
+
+## controllers/Auth.javaを作成しつつUserクラスに認証処理を追加する
+(Security.javaにすると，@With(Secure.class)と似ていてハマりやすいので，あえてAuthと別の名前にした)
+```java
+package controllers;
+
+import models.User;
+
+/**
+ * Play framework組み込みのログイン制御クラス
+ * @author maruyama
+ */
+public class Auth extends Secure.Security {
+
+    /**
+     * 組み込みの認証メソッド．ログイン成功ならtrue，失敗ならfalse
+     * @param username ユーザー名（メールアドレス）
+     * @param password パスワード
+     * @return 
+     */
+    static boolean authentify(String username, String password) {
+        return User.authentify(username, password);
+    }
+
+}
+```
+
+User.javaに以下のメソッドを追加する
+```java
+    /**
+     * IDとPASSのチェックおよびログイン処理
+     * @param email ユーザーID
+     * @param password パスワード（平文）
+     * @return
+     */
+    public static boolean authentify(String email, String password){
+        password = play.libs.Crypto.passwordHash(password);
+        models.User user = models.User.find("byEmailAndPassword", email, password).first();
+        if (user != null) {
+            user.latest_login_date = Calendar.getInstance().getTimeInMillis();
+            user.save();
+            return true;
+        } else {
+            return false;
+        }
+    }
+```
+
+## ユーザー登録フォームや一覧画面を認証が必要なページにする
+
+Application.javaに以下のアノテーションを付与する
+```java
+@With(Secure.class)
+public class Application extends Controller {
+```
+
+## ログアウト機能を作る
+
+　main.htmlのdoLayoutの上にヘッダー周りのHTMLを追記する
+
+views/main.html
+```html
+<body>
+    <div id='header'>
+        <a href='@{Secure.logout}'><button type='button'>LOGOUT</button></a>
+    </div>
+    #{doLayout /}
+</body>
+```
+
+　ついでにpublic/stylesheets/main.cssに以下を記述する．
+```css
+body {
+    margin : 0;
+    padding : 0;
+    border : 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+#header {
+    padding : 0.5em;
+    text-align : right;
+    border-bottom : 1px solid #999;
+    background-color : #DDD;
+}
+```
+
 # ログイン画面をカスタムする
 
 ## カスタムできる状態にする

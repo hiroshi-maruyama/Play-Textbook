@@ -88,4 +88,22 @@ public class User extends Model {
     public static List<User> get_active_user_list(){
         return User.find("byIsDelete", false).fetch();
     }
+    
+    /**
+     * IDとPASSのチェックおよびログイン処理
+     * @param email ユーザーID
+     * @param password パスワード（平文）
+     * @return
+     */
+    public static boolean authentify(String email, String password){
+        password = play.libs.Crypto.passwordHash(password);
+        models.User user = models.User.find("byEmailAndPassword", email, password).first();
+        if (user != null) {
+            user.latest_login_date = Calendar.getInstance().getTimeInMillis();
+            user.save();
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
