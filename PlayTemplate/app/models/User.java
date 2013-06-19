@@ -59,6 +59,19 @@ public class User extends Model {
     }
     
     /**
+     * コンストラクタ．システム初回起動時の管理者ユーザー作成用
+     * @param email
+     * @param password  
+     */
+    public User(String email, String password){
+        this.email = email;
+        this.password = play.libs.Crypto.passwordHash(password);
+        this.regist_date = Calendar.getInstance().getTimeInMillis();
+        this.isDelete = false;
+        this.isAdmin = true;        // 管理者！
+    }
+    
+    /**
      * 登録日時を取得する<br />
      * getTimeInMillisで取得して保存しておいたLong値をDate型に変更する
      * @return 登録日時（Date型）

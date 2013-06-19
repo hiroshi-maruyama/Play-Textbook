@@ -182,3 +182,57 @@ public class Application extends Controller {
     #{/list}
 </ol>
 ```
+
+# 起動時に管理者用アカウントを生成するようにする
+
+　@OnApplicationStartを使い，Userテーブルが空だったら管理者用アカウントを作成する．
+
+app/Bootstrap.javaを作成
+```java
+import play.*;
+import models.User;
+import play.jobs.*;
+
+/**
+ * 初回起動時の処理
+ * @author maruyama
+ */
+@OnApplicationStart
+public class Bootstrap extends Job {
+
+    @Override
+    public void doJob() {
+        // 管理者ユーザーの作成
+        if(User.count() == 0){
+            User user = new User("admin@example.com", "admin");
+            user.save();
+        }
+    }
+}
+```
+
+models.User.javaに以下のメソッドを追加する
+```java
+/**
+ * コンストラクタ．システム初回起動時の管理者ユーザー作成用
+ * @param email
+ * @param password  
+ */
+public User(String email, String password){
+    this.email = email;
+    this.password = play.libs.Crypto.passwordHash(password);
+    this.regist_date = Calendar.getInstance().getTimeInMillis();
+    this.isDelete = false;
+    this.isAdmin = true;        // 管理者！
+}
+```
+
+# ログイン，ログアウト機能を作る
+
+　ユーザー登録フォームとユーザー一覧表示はログイン必須エリアにする．
+
+# ログイン画面をカスタムする
+
+## カスタムできる状態にする
+
+## ユーザー登録フォームをログイン画面に用意する
