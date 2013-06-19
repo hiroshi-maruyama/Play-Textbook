@@ -11,9 +11,16 @@ import models.*;
 public class Application extends Controller {
 
     @Before
-    public static void set_login_user() {
+    public static void start() {
+        AccessLog.access_start();
+        
         User login_user = User.find("byEmail", Auth.connected()).first();
         renderArgs.put("login_user", login_user);
+    }
+    
+    @After
+    public static void end(){
+        AccessLog.access_end(request);
     }
     
     public static void index() {
