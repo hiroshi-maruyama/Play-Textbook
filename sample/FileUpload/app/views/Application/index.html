@@ -1,0 +1,31 @@
+#{extends 'main.html' /}
+#{set title:'FileUpload' /}
+
+<h1>Play-Textbook | FileUpload</h1>
+
+#{if flash.error}
+<p class="error">
+    &{flash.error}
+</p>
+#{/if}
+#{if flash.success}
+<p class="success">
+    &{flash.success}
+</p>
+#{/if}
+
+<h2>File List</h2>
+#{if data_list.isEmpty()}
+No Data
+#{/if}
+<ol>
+    #{list items:data_list, as:'data'}
+    <li><a href="@{download()}?id_of_DataFile=${data.id}">${data.file_name}</a> upload at ${data.get_upload_date().format("yyyy/MM/dd HH:mm")}</li>
+    #{/list}
+</ol>
+
+<h2>File Upload Form</h2>
+<form action="@{upload()}" method="POST" enctype="multipart/form-data">
+    <input type="file" name="data" />
+    <input type="submit" value="UPLOAD" />
+</form>
